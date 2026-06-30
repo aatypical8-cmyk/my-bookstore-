@@ -2,6 +2,7 @@ gunicorn
 whitenoise
 dj-database-url
 psycopg2-binary
+django_pesapal
 django-crispy-forms
 crispy-bootstrap5
 django
