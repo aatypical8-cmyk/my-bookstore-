@@ -1,0 +1,81 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Author Dashboard - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📊 Author Dashboard</h1>
+        <div>
+            <a href="{% url 'pending_payments' %}" class="btn btn-warning me-2">
+                View Pending Payments
+            </a>
+            <a href="{% url 'upload_book' %}" class="btn btn-success">
+                + Upload New Book
+            </a>
+        </div>
+    </div>
+
+    <p class="lead">Welcome back, <strong>{{ user.username }}</strong>!</p>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h2>{{ total_books }}</h2>
+                    <p>Total Books Uploaded</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h2>{{ total_sales }}</h2>
+                    <p>Total Sales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h2>KSh {{ total_earnings|floatformat:2|default:0 }}</h2>
+                    <p>Estimated Earnings</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Published Books -->
+    <h4>My Published Books</h4>
+
+    {% if books %}
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if book.cover_image %}
+                        <img src="{{ book.cover_image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5>{{ book.title }}</h5>
+                        <p class="text-success">KSh {{ book.price }}</p>
+                        <small class="text-muted">{{ book.description|truncatewords:15 }}</small>
+                    </div>
+                    <div class="card-footer d-flex gap-2">
+                        <a href="{% url 'edit_book' book.pk %}" class="btn btn-primary btn-sm flex-fill">
+                            Edit
+                        </a>
+                        <a href="{% url 'delete_book' book.pk %}" class="btn btn-danger btn-sm flex-fill">
+                            Delete
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You haven't published any books yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

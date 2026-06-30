@@ -1,0 +1,32 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Confirm Payment - {{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>Confirm Purchase</h3>
+                    <h4>{{ book.title }}</h4>
+                    <h2 class="text-success">KSh {{ book.price }}</h2>
+
+                    <p class="mt-4">Have you paid via M-Pesa?</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg px-5">
+                            Yes, I have Paid - Add to My Library
+                        </button>
+                    </form>
+
+                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-secondary mt-3">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

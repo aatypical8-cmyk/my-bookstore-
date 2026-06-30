@@ -1,0 +1,31 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Request Payment - {{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Request Payment for</h3>
+                    <h4>{{ book.title }}</h4>
+                    <h2 class="text-success">KSh {{ book.price }}</h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Your M-Pesa Phone Number</label>
+                            <input type="text" name="phone_number" class="form-control"
+                                   placeholder="0712345678" maxlength="10" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            Send Payment Request to Author
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
