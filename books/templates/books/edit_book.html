@@ -1,0 +1,50 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Edit Book - {{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Edit Book</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Book Title</label>
+                            <input type="text" name="title" class="form-control" value="{{ book.title }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="5" required>{{ book.description }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price (KSh)</label>
+                            <input type="number" name="price" class="form-control" value="{{ book.price }}" step="0.01" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">New Cover Image (optional)</label>
+                            <input type="file" name="cover_image" class="form-control" accept="image/*">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">New Ebook File (optional)</label>
+                            <input type="file" name="ebook_file" class="form-control" accept=".pdf">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Update Book
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

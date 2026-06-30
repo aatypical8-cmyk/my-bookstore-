@@ -1,0 +1,47 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Pending Payments{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Pending Payments</h1>
+
+    {% if pending %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Buyer</th>
+                        <th>Book</th>
+                        <th>Amount</th>
+                        <th>Phone Number</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pending %}
+                    <tr>
+                        <td>{{ p.buyer.username }}</td>
+                        <td>{{ p.book.title }}</td>
+                        <td>KSh {{ p.amount }}</td>
+                        <td>{{ p.phone_number }}</td>
+                        <td>{{ p.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'confirm_payment' p.pk %}"
+                               class="btn btn-success btn-sm">
+                                Confirm Payment
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No pending payments at the moment.</p>
+    {% endif %}
+
+    <a href="{% url 'author_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

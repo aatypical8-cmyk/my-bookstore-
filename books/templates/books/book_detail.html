@@ -1,0 +1,82 @@
+{% extends 'books/base.html' %}
+
+{% block title %}{{ book.title }} - My BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'book_list' %}" class="btn btn-secondary mb-3">← Back to All Books</a>
+
+    <div class="row">
+        <!-- Book Cover -->
+        <div class="col-md-5 text-center">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}"
+                     class="img-fluid rounded shadow"
+                     alt="{{ book.title }}"
+                     style="max-height: 450px; object-fit: cover;">
+            {% else %}
+                <div class="bg-light border rounded d-flex align-items-center justify-content-center"
+                     style="height: 400px;">
+                    <h1 class="text-muted">No Cover Available</h1>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Book Details -->
+        <div class="col-md-7">
+            <h1>{{ book.title }}</h1>
+            <h5 class="text-muted">by {{ book.author }}</h5>
+            <h2 class="text-success mt-3 mb-4">KSh {{ book.price }}</h2>
+
+            <h5 class="text-muted">
+                by <a href="{% url 'author_profile' book.author.username %}">{{ book.author }}</a>
+            </h5>
+
+            <hr>
+            <h5>Description</h5>
+            <p style="line-height: 1.7;">{{ book.description }}</p>
+
+            <hr class="my-4">
+
+            <!-- Access Section -->
+            <h4>Access This Book</h4>
+
+            {% if user.is_authenticated %}
+                {% if has_purchased %}
+                    <!-- Already Owns -->
+                    <div class="alert alert-success">
+                        <h5>✅ You own this book!</h5>
+                    </div>
+
+                    <!-- Author's M-Pesa Number -->
+                    <div class="alert alert-info">
+                        <strong>Author's M-Pesa Number:</strong>
+                        {{ book.author.profile.mpesa_number|default:"Not provided by author" }}
+                    </div>
+
+                    <a href="{% url 'read_online' book.pk %}" class="btn btn-primary btn-lg px-5 py-3">
+                        📖 Read Online Now
+                    </a>
+                {% else %}
+                    <!-- Request Payment -->
+                    <form method="post" action="{% url 'request_payment' book.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg px-5 py-3 w-100">
+                            Request Payment via M-Pesa - KSh {{ book.price }}
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5">
+                    Login to Purchase
+                </a>
+            {% endif %}
+
+            <p class="text-muted mt-4">
+                Pay via M-Pesa and get instant access<br>
+                Author will confirm your payment
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

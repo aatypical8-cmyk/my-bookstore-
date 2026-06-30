@@ -1,0 +1,50 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Upload New Book{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">📖 Upload New Book</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Book Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="5" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price (KSh)</label>
+                            <input type="number" name="price" class="form-control" step="0.01" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Cover Image</label>
+                            <input type="file" name="cover_image" class="form-control" accept="image/*">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ebook File (PDF)</label>
+                            <input type="file" name="ebook_file" class="form-control" accept=".pdf">
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            Upload Book
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Become an Author{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Become an Author</h2>
+
+                    <p class="lead text-center">
+                        Start publishing your English/Swahili books and earn money from every sale.
+                    </p>
+
+                    <div class="alert alert-info">
+                        <strong>What you'll get:</strong>
+                        <ul>
+                            <li>Ability to upload and manage your books</li>
+                            <li>Receive payments directly via M-Pesa</li>
+                            <li>Author profile and dashboard</li>
+                        </ul>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            Submit Request to Become an Author
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

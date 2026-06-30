@@ -1,0 +1,42 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Available Books - My BookStore{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Available Books</h1>
+
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-4 mb-4">
+            <div class="card book-card h-100">
+                {% if book.cover_image %}
+                    <img src="{{ book.cover_image.url }}"
+                         class="card-img-top"
+                         style="height: 250px; object-fit: cover;"
+                         alt="{{ book.title }}">
+                {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center"
+                         style="height: 250px;">
+                        <h1 class="text-muted">📖</h1>
+                    </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="text-muted">by {{ book.author }}</p>
+                    <h4 class="text-success">KSh {{ book.price }}</h4>
+                    <p class="card-text">{{ book.description|truncatewords:25 }}</p>
+                </div>
+
+                <div class="card-footer">
+                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary w-100">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <p>No books available yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

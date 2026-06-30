@@ -1,0 +1,103 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>My Profile</h1>
+
+    <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="rounded-circle mb-3" width="120">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width:120px;height:120px;">
+                            <h1 class="text-white">{{ user.username|first|upper }}</h1>
+                        </div>
+                    {% endif %}
+
+                    <h3>{{ user.username }}</h3>
+                    <p class="text-muted">{{ user.email }}</p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Your M-Pesa Number (for receiving payments)</label>
+                        <input type="text" name="mpesa_number" class="form-control"
+                               value="{{ profile.mpesa_number }}" placeholder="">
+                    </div>
+
+                    {% if profile.is_author %}
+                        <span class="badge bg-success fs-6">✅ Verified Author</span>
+                    {% elif profile.author_request_pending %}
+                        <span class="badge bg-warning fs-6">⏳ Request Pending</span>
+                    {% else %}
+                        <span class="badge bg-secondary fs-6">Reader</span>
+                    {% endif %}
+
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-8">
+
+            <!-- Become Author / Dashboard -->
+            {% if profile.is_author %}
+                <a href="{% url 'author_dashboard' %}" class="btn btn-primary btn-lg mb-3">
+                    📊 Go to Author Dashboard
+                </a>
+            {% elif not profile.author_request_pending %}
+                <div class="alert alert-info">
+                    <h5>Want to publish your own books?</h5>
+                    <a href="{% url 'become_author' %}" class="btn btn-success">Become an Author →</a>
+                </div>
+            {% endif %}
+
+            <!-- My Library -->
+            <h4 class="mt-4">📚 My Library</h4>
+            {% if purchases %}
+                <div class="row">
+                    {% for purchase in purchases %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>{{ purchase.book.title }}</h6>
+                                <small>by {{ purchase.book.author }}</small>
+                                <a href="{% url 'book_detail' purchase.book.pk %}" class="btn btn-sm btn-primary mt-2">
+                                    Read / Download
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>You haven't purchased any books yet.</p>
+            {% endif %}
+
+            <!-- My Uploaded Books -->
+            {% if profile.is_author and books_uploaded %}
+                <hr>
+                <h4>📖 My Uploaded Books ({{ books_uploaded.count }})</h4>
+                <a href="{% url 'upload_book' %}" class="btn btn-success mb-3">+ Upload New Book</a>
+
+                <div class="row">
+                    {% for book in books_uploaded %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>{{ book.title }}</h6>
+                                <small class="text-success">KSh {{ book.price }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

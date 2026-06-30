@@ -1,0 +1,73 @@
+{% extends 'books/base.html' %}
+
+{% block title %}{{ author.username }} - Author Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'book_list' %}" class="btn btn-secondary mb-3">← Back to Books</a>
+
+    <div class="row">
+        <!-- Author Info -->
+        <div class="col-md-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="rounded-circle mb-4" width="180" style="border: 5px solid #f8f9fa;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-4" style="width:180px;height:180px;border:5px solid #f8f9fa;">
+                            <h1 class="text-white display-1">{{ author.username|first|upper }}</h1>
+                        </div>
+                    {% endif %}
+
+                    <h2>{{ author.username }}</h2>
+                    <span class="badge bg-success fs-5 px-3 py-2">Verified Author</span>
+
+                    {% if profile.bio %}
+                        <p class="mt-4 lead">{{ profile.bio }}</p>
+                    {% endif %}
+
+                    {% if profile.mpesa_number %}
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <strong>M-Pesa Number:</strong><br>
+                            <span class="fs-5">{{ profile.mpesa_number }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Author's Books -->
+        <div class="col-md-8">
+            <h3 class="mb-4">{{ author.username }}'s Books ({{ books.count }})</h3>
+
+            {% if books %}
+                <div class="row">
+                    {% for book in books %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if book.cover_image %}
+                                <img src="{{ book.cover_image.url }}" class="card-img-top" style="height: 220px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="text-success fw-bold">KSh {{ book.price }}</p>
+                                <p class="card-text text-muted">{{ book.description|truncatewords:25 }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary w-100">
+                                    View Details & Read
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    This author hasn't published any books yet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
