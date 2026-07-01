@@ -16,18 +16,16 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j0*((!7*b1bg6b=_ixr5ip75hw1@7kb7zq$7axy+za+mcka=*t'
+# Security
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-local-development-key')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Turns off debugging in production automatically (set DJANGO_DEBUG=True to enable)
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOSTS', '*'), '127.0.0.1', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -43,20 +41,18 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_pesapal',
-   ]
-
+]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# Media (user-uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Add this exact line here
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,10 +80,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bookstore.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
@@ -95,10 +89,8 @@ DATABASES = {
     )
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -114,40 +106,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
-LOGIN_REDIRECT_URL = 'book_list'
-LOGOUT_REDIRECT_URL = 'book_list'
-
-import os
-import dj_database_url
-
-# Turns off debugging in production automatically
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
-
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-local-development-key')
-
-# Dynamically allows Koyeb's automatically assigned public domain URL
-ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOSTS', '*'), '127.0.0.1', 'localhost']
-
-STATIC_URL = 'static/'
+# Use absolute STATIC_URL so templates generate correct URLs
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Optional: Enables compression and caching optimization
+# Optional: Enables compression and caching optimization for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Login redirects
+LOGIN_REDIRECT_URL = 'book_list'
+LOGOUT_REDIRECT_URL = 'book_list'
