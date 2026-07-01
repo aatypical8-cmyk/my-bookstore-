@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'django_pesapal',
     'cloudinary_storage',
-    'django.contrib.staticfiles',
    ]
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
