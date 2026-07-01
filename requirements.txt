@@ -6,3 +6,4 @@ django_pesapal
 django-crispy-forms
 crispy-bootstrap5
 django
+distutils
