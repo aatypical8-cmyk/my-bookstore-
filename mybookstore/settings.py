@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-j0*((!7*b1bg6b=_ixr5ip75hw1@7kb7zq$7axy+za+mcka=*t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # For Django 4.2+ or newer versions
 STORAGES = {
