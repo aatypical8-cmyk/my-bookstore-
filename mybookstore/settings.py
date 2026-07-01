@@ -156,3 +156,5 @@ LOGOUT_REDIRECT_URL = 'book_list'
 
 # Optional: Enables compression and caching optimization
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+SITE_ID = 1
