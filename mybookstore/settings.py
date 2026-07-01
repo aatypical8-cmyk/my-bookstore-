@@ -78,8 +78,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bookstore.urls'
-WSGI_APPLICATION = 'bookstore.wsgi.application'
+ROOT_URLCONF = 'mybookstore.urls'
+WSGI_APPLICATION = 'mybookstore.wsgi.application'
 
 TEMPLATES = [
     {
