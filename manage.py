@@ -15,7 +15,7 @@ if not hasattr(django.utils.translation, 'ugettext_lazy'):
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bookstore.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mybookstore.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
