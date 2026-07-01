@@ -28,6 +28,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# For Django 4.2+ or newer versions
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage", # Changed from CompressedManifestStaticFilesStorage
+    },
+}
 
 # Application definition
 INSTALLED_APPS = [
@@ -43,11 +52,15 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_pesapal',
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
    ]
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -66,6 +79,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bookstore.urls'
+WSGI_APPLICATION = 'bookstore.wsgi.application'
 
 TEMPLATES = [
     {
@@ -81,8 +95,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'bookstore.wsgi.application'
 
 
 # Database
@@ -130,24 +142,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_REDIRECT_URL = 'book_list'
 LOGOUT_REDIRECT_URL = 'book_list'
-
-import os
-import dj_database_url
-
-# Turns off debugging in production automatically
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
-
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-local-development-key')
-
-# Dynamically allows Koyeb's automatically assigned public domain URL
-ALLOWED_HOSTS = [os.environ.get('DJANGO_ALLOWED_HOSTS', '*'), '127.0.0.1', 'localhost']
-
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Optional: Enables compression and caching optimization
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
