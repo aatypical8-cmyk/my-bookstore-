@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,9 +58,11 @@ INSTALLED_APPS = [
    ]
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': 'mfho6mc1',
+    'API_KEY': '637291241727791',
+    'API_SECRET': 'QGXZaTWw8y3aAuJMjTneAj8vC8U',
+    'RESOURCE_TYPE': 'raw',
+    'UPLOAD_PRESET': 'django_preset'
 }
 
 # Tell Django to use Cloudinary for media files
