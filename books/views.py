@@ -219,7 +219,6 @@ def purchase_book(request, pk):
         return HttpResponse(f"Pesapal Order Error: {order_result}")
 
 
-# ====================== OTHER ======================
 @login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -232,11 +231,8 @@ def read_online(request, book_id):
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    response = requests.get(book.ebook_file.url)
-
-    django_response = HttpResponse(response.content, content_type='application/pdf')
-    django_response['Content-Disposition'] = f'inline; filename="{book.title}.pdf"'
-    return django_response
+    # Just render your existing template!
+    return render(request, 'books/read_online.html', {'book': book})
 
 
 @login_required
