@@ -219,6 +219,14 @@ def purchase_book(request, pk):
         return HttpResponse(f"Pesapal Order Error: {order_result}")
 
 
+import base64
+import requests
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Book, Purchase
+
+
 @login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -231,8 +239,17 @@ def read_online(request, book_id):
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    # Just render your existing template!
-    return render(request, 'books/read_online.html', {'book': book})
+    # 1. Fetch the file securely in the background
+    response = requests.get(book.ebook_file.url)
+
+    # 2. Convert the raw binary data into a safe text string
+    pdf_base64 = base64.b64encode(response.content).decode('utf-8')
+
+    # 3. Pass that data string directly to your template page layout shell
+    return render(request, 'books/read_online.html', {
+        'book': book,
+        'pdf_data': pdf_base64
+    })
 
 
 @login_required
