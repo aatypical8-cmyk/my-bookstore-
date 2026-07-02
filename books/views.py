@@ -242,26 +242,7 @@ def read_online(request, book_id):
 @login_required
 def my_library(request):
     purchases = Purchase.objects.filter(buyer=request.user).select_related('book')
-
-    # Grab the first purchase to test, or pass a book_id to the view
-    purchase = purchases.first()
-    if not purchase:
-        messages.error(request, "You haven't purchased any books yet.")
-        return render(request, 'books/my_library.html', {'purchases': purchases})
-
-    book = purchase.book  # <--- This defines 'book' so the error goes away!
-
-    if not book.ebook_file:
-        messages.error(request, "No ebook file available.")
-        return redirect('book_detail', pk=book.pk)
-
-    # Instead of redirecting, fetch the file content from Cloudinary securely
-    response = requests.get(book.ebook_file.url)
-
-    # Send it directly to the user's browser as a readable PDF
-    django_response = HttpResponse(response.content, content_type='application/pdf')
-    django_response['Content-Disposition'] = f"inline; filename={book.title}.pdf"
-    return django_response
+    return render(request, 'books/my_library.html', {'purchases': purchases})
 
 @login_required
 def request_payment(request, pk):
