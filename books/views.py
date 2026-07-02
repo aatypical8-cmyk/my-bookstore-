@@ -10,10 +10,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse
 import json
-import requests
 from django.conf import settings
 
 from .models import Book, Purchase, Profile, PaymentConfirmation
+
+import requests
+
+from django.http import HttpResponse
 
 
 # ====================== MAIN VIEWS ======================
@@ -220,6 +223,7 @@ def purchase_book(request, pk):
 @login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
+
     if not Purchase.objects.filter(buyer=request.user, book=book).exists():
         messages.error(request, "You must purchase this book to read it.")
         return redirect('book_detail', pk=book.pk)
@@ -228,13 +232,36 @@ def read_online(request, book_id):
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    return redirect(book.ebook_file.url)
+    response = requests.get(book.ebook_file.url)
+
+    django_response = HttpResponse(response.content, content_type='application/pdf')
+    django_response['Content-Disposition'] = f'inline; filename="{book.title}.pdf"'
+    return django_response
 
 
 @login_required
 def my_library(request):
-    purchases = Purchase.objects.filter(buyer=request.user).select_related('book')
-    return render(request, 'books/my_library.html', {'purchases': purchases})
+    purchases = Purchase.objects.filter(user=request.user).select_related('book')
+
+    # Grab the first purchase to test, or pass a book_id to the view
+    purchase = purchases.first()
+    if not purchase:
+        messages.error(request, "You haven't purchased any books yet.")
+        return render(request, 'books/my_library.html', {'purchases': purchases})
+
+    book = purchase.book  # <--- This defines 'book' so the error goes away!
+
+    if not book.ebook_file:
+        messages.error(request, "No ebook file available.")
+        return redirect('book_detail', pk=book.pk)
+
+    # Instead of redirecting, fetch the file content from Cloudinary securely
+    response = requests.get(book.ebook_file.url)
+
+    # Send it directly to the user's browser as a readable PDF
+    django_response = HttpResponse(response.content, content_type='application/pdf')
+    django_response['Content-Disposition'] = f"inline; filename={book.title}.pdf"
+    return django_response
 
 @login_required
 def request_payment(request, pk):
