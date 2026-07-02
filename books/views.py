@@ -260,14 +260,19 @@ def read_online(request, book_id):
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    # 2. Fetch the file content securely from Cloudinary in the background
-    response = requests.get(book.ebook_file.url)
+    # 2. Smart URL check: Handles old Django file objects AND your new Cloudinary text URL strings
+    if hasattr(book.ebook_file, 'url'):
+        file_url = book.ebook_file.url
+    else:
+        file_url = str(book.ebook_file)
 
-    # 3. Stream it natively as a web response
+    # 3. Fetch the file content securely from Cloudinary in the background
+    response = requests.get(file_url)
+
+    # 4. Stream it natively as a clean web response
     django_response = HttpResponse(response.content, content_type='application/pdf')
 
-    # 4. 'inline' without a filename tells the browser to display it directly
-    # while hiding the download/save bar features natively
+    # 5. 'inline' tells the browser to display it directly while hiding native save/download buttons
     django_response['Content-Disposition'] = 'inline'
 
     return django_response
