@@ -219,9 +219,9 @@ def purchase_book(request, pk):
         return HttpResponse(f"Pesapal Order Error: {order_result}")
 
 
-import base64
 import requests
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Book, Purchase
@@ -231,6 +231,7 @@ from .models import Book, Purchase
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
 
+    # 1. Keep your excellent security check active
     if not Purchase.objects.filter(buyer=request.user, book=book).exists():
         messages.error(request, "You must purchase this book to read it.")
         return redirect('book_detail', pk=book.pk)
@@ -239,17 +240,17 @@ def read_online(request, book_id):
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    # 1. Fetch the file securely in the background
+    # 2. Fetch the file content securely from Cloudinary in the background
     response = requests.get(book.ebook_file.url)
 
-    # 2. Convert the raw binary data into a safe text string
-    pdf_base64 = base64.b64encode(response.content).decode('utf-8')
+    # 3. Stream it natively as a web response
+    django_response = HttpResponse(response.content, content_type='application/pdf')
 
-    # 3. Pass that data string directly to your template page layout shell
-    return render(request, 'books/read_online.html', {
-        'book': book,
-        'pdf_data': pdf_base64
-    })
+    # 4. 'inline' without a filename tells the browser to display it directly
+    # while hiding the download/save bar features natively
+    django_response['Content-Disposition'] = 'inline'
+
+    return django_response
 
 
 @login_required
