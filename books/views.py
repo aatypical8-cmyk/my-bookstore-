@@ -112,6 +112,8 @@ def author_dashboard(request):
     return render(request, 'books/author_dashboard.html', context)
 
 
+import cloudinary.uploader  # Make sure this import is present
+
 @login_required
 def upload_book(request):
     if not request.user.profile.is_author:
@@ -122,18 +124,38 @@ def upload_book(request):
         title = request.POST.get('title')
         description = request.POST.get('description')
         price = request.POST.get('price')
-        cover_image = request.FILES.get('cover_image')
-        ebook_file = request.FILES.get('ebook_file')
+
+        # 1. Grab files from the request payload safely
+        cover_image_file = request.FILES.get('cover_image')
+        ebook_file_obj = request.FILES.get('ebook_file')
 
         if title and description and price:
+            uploaded_cover_url = None
+            uploaded_ebook_url = None
+
+            # 2. Upload the cover image to Cloudinary first
+            if cover_image_file:
+                cover_upload = cloudinary.uploader.upload(cover_image_file)
+                uploaded_cover_url = cover_upload.get('secure_url')
+
+            # 3. Stream the heavy PDF to Cloudinary securely using resource_type="auto"
+            if ebook_file_obj:
+                ebook_upload = cloudinary.uploader.upload(
+                    ebook_file_obj,
+                    resource_type="auto"  # <-- Prevents connection drops on large PDFs
+                )
+                uploaded_ebook_url = ebook_upload.get('secure_url')
+
+            # 4. Save the string URLs to the database record instead of the raw data block
             Book.objects.create(
                 title=title,
-                author=request.user,
                 description=description,
                 price=price,
-                cover_image=cover_image,
-                ebook_file=ebook_file
+                author=request.user,
+                cover_image=uploaded_cover_url,
+                ebook_file=uploaded_ebook_url
             )
+
             messages.success(request, f"Book '{title}' uploaded successfully!")
             return redirect('author_dashboard')
         else:
@@ -141,8 +163,6 @@ def upload_book(request):
 
     return render(request, 'books/upload_book.html')
 
-
-# ====================== PESAPAL PAYMENT ======================
 
 @login_required
 def purchase_book(request, pk):
