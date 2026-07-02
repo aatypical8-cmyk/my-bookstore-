@@ -241,7 +241,7 @@ def read_online(request, book_id):
 
 @login_required
 def my_library(request):
-    purchases = Purchase.objects.filter(user=request.user).select_related('book')
+    purchases = Purchase.objects.filter(buyer=request.user).select_related('book')
 
     # Grab the first purchase to test, or pass a book_id to the view
     purchase = purchases.first()
