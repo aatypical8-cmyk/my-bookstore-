@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse
 import json
 from django.conf import settings
-
+from django.contrib import messages
 from .models import Book, Purchase, Profile, PaymentConfirmation
 
 import requests
@@ -20,10 +20,20 @@ from django.http import HttpResponse
 
 
 # ====================== MAIN VIEWS ======================
-
 def book_list(request):
     books = Book.objects.all()
-    return render(request, 'books/book_list.html', {'books': books})
+    # Check status only if user is logged in
+    is_pending = False
+    if request.user.is_authenticated:
+        is_pending = AuthorRequest.objects.filter(user=request.user, status='pending').exists()
+
+    # Combine both into one context dictionary
+    context = {
+        'books': books,
+        'is_pending': is_pending
+    }
+
+    return render(request, 'books/book_list.html', context)
 
 
 def book_detail(request, pk):
@@ -458,7 +468,7 @@ def request_author_status(request):
 
 def become_author(request):
     if request.method == 'POST':
-        # This saves the request to the database using the model we created
         AuthorRequest.objects.get_or_create(user=request.user, status='pending')
-        return redirect('book_list') # Redirect them back home after submission
+        messages.success(request, "Your request to become an author has been sent!") # Success flash
+        return redirect('book_list')
     return render(request, 'books/become_author.html')

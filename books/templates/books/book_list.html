@@ -35,6 +35,12 @@
                 </div>
             </div>
         </div>
+        {% if is_pending %}
+            <p>Your request to be an author is currently <strong>pending</strong>.</p>
+        {% else %}
+             <a href="{% url 'become_author' %}">Apply to become an author</a>
+        {% endif %}
+
         {% empty %}
             <p>No books available yet.</p>
         {% endfor %}
