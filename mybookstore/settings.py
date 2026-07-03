@@ -109,15 +109,22 @@ TEMPLATES = [
 import os
 import dj_database_url
 
-# Use the DATABASE_URL environment variable provided by Render.
-# If it's missing (like when running locally), it defaults to your local SQLite file.
+# If DATABASE_URL is set in Render, it will use it.
+# If not (like on your local machine), it uses the sqlite fallback.
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
         conn_max_age=600,
-        ssl_require=True
     )
 }
+
+# Fix for the 'sslmode' error:
+# If we are using Postgres, we need to ensure the SSL settings are handled correctly
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
 
 
 # Password validation
