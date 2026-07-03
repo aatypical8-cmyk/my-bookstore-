@@ -460,5 +460,5 @@ def become_author(request):
     if request.method == 'POST':
         # This saves the request to the database using the model we created
         AuthorRequest.objects.get_or_create(user=request.user, status='pending')
-        return redirect('home') # Redirect them back home after submission
+        return redirect('book_list') # Redirect them back home after submission
     return render(request, 'books/become_author.html')
