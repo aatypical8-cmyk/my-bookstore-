@@ -11,7 +11,7 @@ class BooksConfig(AppConfig):
         try:
             if not User.objects.filter(username='Gerald').exists():
                 User.objects.create_superuser(
-                    username='Gerald',
+                    username='Titus',
                     email='aatypical8@gmail.com',
                     password='omwash1234'
                 )
