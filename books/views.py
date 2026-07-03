@@ -81,17 +81,6 @@ def profile(request):
 
 
 @login_required
-def become_author(request):
-    profile, _ = Profile.objects.get_or_create(user=request.user)
-    if request.method == 'POST':
-        profile.author_request_pending = True
-        profile.save()
-        messages.success(request, "Your author request has been submitted.")
-        return redirect('profile')
-    return render(request, 'books/become_author.html', {'profile': profile})
-
-
-@login_required
 def author_dashboard(request):
     if not request.user.profile.is_author:
         messages.warning(request, "You need to be an approved author.")
@@ -424,3 +413,52 @@ def author_profile(request, username):
         'books': books,
     }
     return render(request, 'books/author_profile.html', context)
+
+
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def author_requests(request):
+    if not request.user.is_superuser:
+        return redirect('home')  # Only let you in if you are a superuser
+
+    # Assuming you have a model 'AuthorRequest'
+    requests = AuthorRequest.objects.filter(status='pending')
+    return render(request, 'approve_authors.html', {'requests': requests})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import AuthorRequest  # Ensure you import your model
+
+
+@login_required
+def approve_author(request, request_id):
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    req = get_object_or_404(AuthorRequest, id=request_id)
+    if request.method == 'POST':
+        user = req.user
+        user.is_author = True  # Adjust this to match your model field
+        user.save()
+        req.status = 'approved'
+        req.save()
+    return redirect('author_requests')
+
+# In views.py
+def request_author_status(request):
+    if request.method == 'POST':
+        # This creates the request record in the database
+        AuthorRequest.objects.create(user=request.user, status='pending')
+        return redirect('home') # Or a thankyou page
+    return render(request, 'request_form.html')
+
+def become_author(request):
+    if request.method == 'POST':
+        # This saves the request to the database using the model we created
+        AuthorRequest.objects.get_or_create(user=request.user, status='pending')
+        return redirect('home') # Redirect them back home after submission
+    return render(request, 'your_template_name.html')

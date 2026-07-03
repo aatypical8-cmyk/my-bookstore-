@@ -1,0 +1,14 @@
+<h2>Pending Author Requests</h2>
+<ul>
+    {% for req in requests %}
+    <li>
+        {{ req.user.username }}
+        <form action="{% url 'approve_author' req.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Approve as Author</button>
+        </form>
+    </li>
+    {% empty %}
+    <p>No pending requests.</p>
+    {% endfor %}
+</ul>
