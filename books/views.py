@@ -370,6 +370,12 @@ def edit_book(request, pk):
 
     return render(request, 'books/edit_book.html', {'book': book})
 
+
+from django.db import transaction  # Add this import
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+
 @login_required
 def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
@@ -379,7 +385,9 @@ def delete_book(request, pk):
         return redirect('author_dashboard')
 
     if request.method == 'POST':
-        book.delete()
+        # Wrapping in transaction.atomic ensures the database operation is complete
+        with transaction.atomic():
+            book.delete()
         messages.success(request, "Book deleted successfully.")
         return redirect('author_dashboard')
 

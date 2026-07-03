@@ -106,14 +106,16 @@ TEMPLATES = [
     },
 ]
 
+import os
+import dj_database_url
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
+# Use the DATABASE_URL environment variable provided by Render.
+# If it's missing (like when running locally), it defaults to your local SQLite file.
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
-        conn_max_age=600
+        conn_max_age=600,
+        ssl_require=True
     )
 }
 
