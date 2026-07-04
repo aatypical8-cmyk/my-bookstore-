@@ -1,48 +1,45 @@
 {% extends 'books/base.html' %}
 
-{% block title %}Available Books - My BookStore{% endblock %}
-
 {% block content %}
-    <h1 class="mb-4">Available Books</h1>
+    <!-- 1. Display Success Message (if any) -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
+    <h1>Book List</h1>
+
+    <!-- 2. Conditional Author Request Status -->
+    <div class="mb-4">
+        {% if user.is_authenticated %}
+            {% if is_pending %}
+                <div class="alert alert-warning">
+                    Your request to be an author is currently <strong>pending</strong>.
+                </div>
+            {% else %}
+                <a href="{% url 'become_author' %}" class="btn btn-primary">
+                    Apply to become an author
+                </a>
+            {% endif %}
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to apply as an author.</p>
+        {% endif %}
+    </div>
+
+    <!-- 3. Your Existing Book List -->
     <div class="row">
         {% for book in books %}
-        <div class="col-md-4 mb-4">
-            <div class="card book-card h-100">
-                {% if book.cover_image %}
-                    <img src="{{ book.cover_image.url }}"
-                         class="card-img-top"
-                         style="height: 250px; object-fit: cover;"
-                         alt="{{ book.title }}">
-                {% else %}
-                    <div class="bg-light d-flex align-items-center justify-content-center"
-                         style="height: 250px;">
-                        <h1 class="text-muted">📖</h1>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline-primary">View Details</a>
                     </div>
-                {% endif %}
-
-                <div class="card-body">
-                    <h5 class="card-title">{{ book.title }}</h5>
-                    <p class="text-muted">by {{ book.author }}</p>
-                    <h4 class="text-success">KSh {{ book.price }}</h4>
-                    <p class="card-text">{{ book.description|truncatewords:25 }}</p>
-                </div>
-
-                <div class="card-footer">
-                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary w-100">
-                        View Details
-                    </a>
                 </div>
             </div>
-        </div>
-        {% if is_pending %}
-            <p>Your request to be an author is currently <strong>pending</strong>.</p>
-        {% else %}
-             <a href="{% url 'become_author' %}">Apply to become an author</a>
-        {% endif %}
-
-        {% empty %}
-            <p>No books available yet.</p>
         {% endfor %}
     </div>
 {% endblock %}

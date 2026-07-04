@@ -13,9 +13,9 @@ import json
 from django.conf import settings
 from django.contrib import messages
 from .models import Book, Purchase, Profile, PaymentConfirmation
-
+from django.contrib.auth.decorators import login_required
 import requests
-
+from .forms import BookForm
 from django.http import HttpResponse
 
 
@@ -345,29 +345,25 @@ def pending_payments(request):
     return render(request, 'books/pending_payments.html', {'pending': pending})
 
 
-@login_required
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
-
-    if book.author != request.user:
-        messages.error(request, "You can only edit your own books.")
-        return redirect('author_dashboard')
-
     if request.method == 'POST':
-        book.title = request.POST.get('title', book.title)
-        book.description = request.POST.get('description', book.description)
-        book.price = request.POST.get('price', book.price)
-
-        if 'cover_image' in request.FILES:
-            book.cover_image = request.FILES['cover_image']
-        if 'ebook_file' in request.FILES:
-            book.ebook_file = request.FILES['ebook_file']
-
-        book.save()
-        messages.success(request, f"Book '{book.title}' updated successfully!")
-        return redirect('author_dashboard')
-
-    return render(request, 'books/edit_book.html', {'book': book})
+        form = BookForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            # Check if a new file was actually uploaded
+            if 'ebook_file' in request.FILES:
+                # Proceed with update
+                form.save()
+            else:
+                # Save without overwriting the file if no new file is uploaded
+                form.save(commit=False)
+                book.title = form.cleaned_data['title']
+                # ... update other fields manually if needed ...
+                book.save()
+            return redirect('book_detail', pk=book.pk)
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'books/edit_book.html', {'form': form})
 
 
 from django.db import transaction  # Add this import
