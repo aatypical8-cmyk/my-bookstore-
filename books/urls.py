@@ -13,8 +13,6 @@ urlpatterns = [
     path('become-author/', views.become_author, name='become_author'),
     path('author-dashboard/', views.author_dashboard, name='author_dashboard'),
     path('upload-book/', views.upload_book, name='upload_book'),
-
-    path('purchase/<int:pk>/', views.purchase_book, name='purchase_book'),
     path('book/<int:book_id>/read/', views.read_online, name='read_online'),
     path('request-payment/<int:pk>/', views.request_payment, name='request_payment'),
     path('confirm-payment/<int:pk>/', views.confirm_payment, name='confirm_payment'),
