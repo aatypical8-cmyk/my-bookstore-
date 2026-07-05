@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 import requests
 from .forms import BookForm
 from django.http import HttpResponse
+from .models import Profile
 
 
 # ====================== MAIN VIEWS ======================
@@ -39,13 +40,18 @@ def book_list(request):
 def book_detail(request, pk):
     book = get_object_or_404(Book, pk=pk)
 
+    # Fetch the author's profile
+    # Replace 'AuthorProfile' with the actual name of your profile model
+    author_profile = Profile.objects.filter(user=book.author).first()
+
     has_purchased = False
     if request.user.is_authenticated:
         has_purchased = Purchase.objects.filter(buyer=request.user, book=book).exists()
 
     return render(request, 'books/book_detail.html', {
         'book': book,
-        'has_purchased': has_purchased
+        'has_purchased': has_purchased,
+        'author_profile': author_profile,  # Pass this to the template
     })
 
 

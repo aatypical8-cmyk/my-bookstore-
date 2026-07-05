@@ -1,82 +1,52 @@
 {% extends 'books/base.html' %}
 
-{% block title %}{{ book.title }} - My BookStore{% endblock %}
-
 {% block content %}
-<div class="container mt-4">
-    <a href="{% url 'book_list' %}" class="btn btn-secondary mb-3">← Back to All Books</a>
-
+<div class="container mt-5">
     <div class="row">
-        <!-- Book Cover -->
-        <div class="col-md-5 text-center">
+        <div class="col-md-6">
             {% if book.cover_image %}
-                <img src="{{ book.cover_image.url }}"
-                     class="img-fluid rounded shadow"
-                     alt="{{ book.title }}"
-                     style="max-height: 450px; object-fit: cover;">
-            {% else %}
-                <div class="bg-light border rounded d-flex align-items-center justify-content-center"
-                     style="height: 400px;">
-                    <h1 class="text-muted">No Cover Available</h1>
-                </div>
+                <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}">
             {% endif %}
         </div>
-
-        <!-- Book Details -->
-        <div class="col-md-7">
+        <div class="col-md-6">
             <h1>{{ book.title }}</h1>
-            <h5 class="text-muted">by {{ book.author }}</h5>
-            <h2 class="text-success mt-3 mb-4">KSh {{ book.price }}</h2>
+            <p><strong>Author:</strong> {{ book.author.username }}</p>
+            <p><strong>Price:</strong> KES {{ book.price }}</p>
+            <p>{{ book.description }}</p>
 
-            <h5 class="text-muted">
-                by <a href="{% url 'author_profile' book.author.username %}">{{ book.author }}</a>
-            </h5>
-
-            <hr>
-            <h5>Description</h5>
-            <p style="line-height: 1.7;">{{ book.description }}</p>
-
-            <hr class="my-4">
-
-            <!-- Access Section -->
-            <h4>Access This Book</h4>
-
-            {% if user.is_authenticated %}
-                {% if has_purchased %}
-                    <!-- Already Owns -->
-                    <div class="alert alert-success">
-                        <h5>✅ You own this book!</h5>
+            <!-- Payment Section -->
+            {% if author_profile and author_profile.mpesa_number %}
+                <div class="card mt-4 border-success">
+                    <div class="card-body">
+                        <h5 class="text-success">Payment Details</h5>
+                        <p>To purchase this book, please send payment to the author's M-Pesa:</p>
+                        <div class="alert alert-light border">
+                            <strong>Number: </strong>
+                            <span id="mpesa-number">{{ author_profile.mpesa_number }}</span>
+                            <button class="btn btn-sm btn-outline-secondary ml-2" onclick="copyNumber()">Copy</button>
+                        </div>
                     </div>
-
-                    <!-- Author's M-Pesa Number -->
-                    <div class="alert alert-info">
-                        <strong>Author's M-Pesa Number:</strong>
-                        {{ book.author.profile.mpesa_number|default:"Not provided by author" }}
-                    </div>
-
-                    <a href="{% url 'read_online' book.pk %}" class="btn btn-primary btn-lg px-5 py-3">
-                        📖 Read Online Now
-                    </a>
-                {% else %}
-                    <!-- Request Payment -->
-                    <form method="post" action="{% url 'request_payment' book.pk %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-lg px-5 py-3 w-100">
-                            Request Payment via M-Pesa - KSh {{ book.price }}
-                        </button>
-                    </form>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5">
-                    Login to Purchase
-                </a>
+                </div>
             {% endif %}
 
-            <p class="text-muted mt-4">
-                Pay via M-Pesa and get instant access<br>
-                Author will confirm your payment
-            </p>
+            <!-- Purchase/Download Button -->
+            {% if has_purchased %}
+                <a href="{{ book.ebook_file.url }}" class="btn btn-success mt-3">Download Ebook</a>
+            {% else %}
+                <button class="btn btn-primary mt-3" disabled>Purchase to Download</button>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+function copyNumber() {
+    var text = document.getElementById("mpesa-number").innerText;
+    navigator.clipboard.writeText(text).then(function() {
+        alert("M-Pesa number copied to clipboard!");
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
 {% endblock %}
