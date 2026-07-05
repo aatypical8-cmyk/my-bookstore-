@@ -33,7 +33,8 @@
             {% if has_purchased %}
                 <a href="{{ book.ebook_file.url }}" class="btn btn-success mt-3">Download Ebook</a>
             {% else %}
-                <button class="btn btn-primary mt-3" disabled>Purchase to Download</button>
+            <!-- Link this to a view that creates a 'PendingPayment' record -->
+                <a href="{% url 'request_payment' book.pk %}" class="btn btn-primary mt-3">Purchase Now</a>
             {% endif %}
         </div>
     </div>
