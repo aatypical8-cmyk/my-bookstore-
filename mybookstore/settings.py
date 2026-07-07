@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'django_pesapal',
     'cloudinary_storage',
+    'pwa',
    ]
 
 import os
@@ -172,3 +173,19 @@ LOGOUT_REDIRECT_URL = 'book_list'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SITE_ID = 1
+
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'books/static/js/serviceworker.js')
+PWA_APP_NAME = 'MyBookstore'
+PWA_APP_DESCRIPTION = "Your favorite bookstore"
+PWA_APP_THEME_COLOR = '#007bff'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/logo.png', # Ensure you have a logo here
+        'sizes': '160x160'
+    }
+]
