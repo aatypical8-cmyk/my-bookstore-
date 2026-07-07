@@ -186,6 +186,7 @@ PWA_APP_START_URL = '/'
 PWA_APP_ICONS = [
     {
         'src': '/static/images/logo.png', # Ensure you have a logo here
-        'sizes': '160x160'
+        'sizes': '160x160',
+        'type': 'image/png'
     }
 ]
