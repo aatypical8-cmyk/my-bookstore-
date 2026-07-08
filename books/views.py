@@ -284,7 +284,7 @@ def edit_book(request, pk):
             return redirect('book_list')
     else:
         form = BookForm(instance=book)
-    return render(request, 'edit_book.html', {'form': form})
+    return render(request, 'books/edit_book.html', {'form': form})
 
 
 from django.db import transaction  # Add this import
