@@ -274,26 +274,17 @@ def pending_payments(request):
 
     return render(request, 'books/pending_payments.html', {'pending': pending})
 
-
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
+        # You MUST include request.FILES here
         form = BookForm(request.POST, request.FILES, instance=book)
         if form.is_valid():
-            # Check if a new file was actually uploaded
-            if 'ebook_file' in request.FILES:
-                # Proceed with update
-                form.save()
-            else:
-                # Save without overwriting the file if no new file is uploaded
-                form.save(commit=False)
-                book.title = form.cleaned_data['title']
-                # ... update other fields manually if needed ...
-                book.save()
-            return redirect('book_detail', pk=book.pk)
+            form.save()
+            return redirect('book_list')
     else:
         form = BookForm(instance=book)
-    return render(request, 'books/edit_book.html', {'form': form})
+    return render(request, 'edit_book.html', {'form': form})
 
 
 from django.db import transaction  # Add this import
