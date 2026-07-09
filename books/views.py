@@ -179,32 +179,24 @@ from .models import Book, Purchase
 @login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-
-    # 1. Keep your excellent security check active
+    # Security Check: Ensure the user purchased the book
     if not Purchase.objects.filter(buyer=request.user, book=book).exists():
         messages.error(request, "You must purchase this book to read it.")
         return redirect('book_detail', pk=book.pk)
 
+    # Check if the file exists
     if not book.ebook_file:
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    # 2. Smart URL check: Handles old Django file objects AND your new Cloudinary text URL strings
+    # Handle Cloudinary URL Correctly
     if hasattr(book.ebook_file, 'url'):
         file_url = book.ebook_file.url
     else:
         file_url = str(book.ebook_file)
 
-    # 3. Fetch the file content securely from Cloudinary in the background
-    response = requests.get(file_url)
-
-    # 4. Stream it natively as a clean web response
-    django_response = HttpResponse(response.content, content_type='application/pdf')
-
-    # 5. 'inline' tells the browser to display it directly while hiding native save/download buttons
-    django_response['Content-Disposition'] = 'inline'
-
-    return django_response
+    # Redirect directly to the Cloudinary file URL
+    return redirect(file_url)
 
 
 @login_required
