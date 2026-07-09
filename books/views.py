@@ -178,17 +178,22 @@ from .models import Book, Purchase
 @login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-
     # 1. Security Check
     if not Purchase.objects.filter(buyer=request.user, book=book).exists():
         messages.error(request, "You must purchase this book to read it.")
         return redirect('book_detail', pk=book.pk)
 
-    # 2. Get the clean URL directly from the file object
+    # 2. Get the file path directly
+    # If it is already a full URL, just return it as a string
     if book.ebook_file:
-        # Django's CloudinaryField provides a .url property that
-        # is already correctly formatted.
-        return redirect(book.ebook_file.url)
+        # Check if it's a Cloudinary object that needs .url,
+        # or if it's already a full string URL
+        file_url = book.ebook_file.url if hasattr(book.ebook_file, 'url') else str(book.ebook_file)
+
+        # FINAL PROTECTION:
+        # If the file_url already contains 'https://res.cloudinary.com',
+        # we don't need to add anything. Just redirect.
+        return redirect(file_url)
 
     messages.error(request, "No ebook file available.")
     return redirect('book_detail', pk=book.pk)
