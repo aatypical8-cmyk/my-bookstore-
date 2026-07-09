@@ -176,28 +176,35 @@ from django.contrib.auth.decorators import login_required
 from .models import Book, Purchase
 
 
-@login_required
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    # Security Check: Ensure the user purchased the book
+
+    # 1. Security check: Ensure the user purchased the book
     if not Purchase.objects.filter(buyer=request.user, book=book).exists():
         messages.error(request, "You must purchase this book to read it.")
         return redirect('book_detail', pk=book.pk)
 
-    # Check if the file exists
+    # 2. Check if the file exists
     if not book.ebook_file:
         messages.error(request, "No ebook file available.")
         return redirect('book_detail', pk=book.pk)
 
-    # Handle Cloudinary URL Correctly
+    # 3. Handle Cloudinary URL
     if hasattr(book.ebook_file, 'url'):
         file_url = book.ebook_file.url
     else:
         file_url = str(book.ebook_file)
 
-    # Redirect directly to the Cloudinary file URL
-    return redirect(file_url)
+    # 4. Force Download for Cloudinary
+    # 'fl_attachment' tells Cloudinary to trigger a browser download
+    if "cloudinary" in file_url:
+        # This replaces '/upload/' with '/upload/fl_attachment/'
+        # to force the browser to save the file instead of viewing it
+        download_url = file_url.replace("/upload/", "/upload/fl_attachment/")
+        return redirect(download_url)
 
+    # Fallback for non-Cloudinary storage
+    return redirect(file_url)
 
 @login_required
 def my_library(request):
