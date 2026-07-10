@@ -421,6 +421,6 @@ def preview_book(request, book_id):
     # You can also tell them in the UI that they can read up to 5 pages
     preview_url = f"{clean_url}#page=1"
 
-    return render(request, 'preview.html', {'book': book, 'preview_url': preview_url})
+    return render(request, 'books/preview.html', {'book': book, 'preview_url': preview_url})
 
 
