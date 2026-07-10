@@ -403,3 +403,24 @@ def become_author(request):
     return render(request, 'books/become_author.html')
 
 
+def preview_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+
+    if not book.ebook_file:
+        messages.error(request, "Preview not available.")
+        return redirect('book_detail', pk=book.pk)
+
+    # Use the clean URL logic we established
+    raw_url = str(book.ebook_file)
+    if raw_url.count('https://res.cloudinary.com') > 1:
+        clean_url = 'https' + raw_url.split('https')[-1]
+    else:
+        clean_url = raw_url
+
+    # We append #page=1 to the URL to tell the browser to start at the first page
+    # You can also tell them in the UI that they can read up to 5 pages
+    preview_url = f"{clean_url}#page=1"
+
+    return render(request, 'preview.html', {'book': book, 'preview_url': preview_url})
+
+
