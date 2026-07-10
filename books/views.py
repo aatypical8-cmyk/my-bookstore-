@@ -302,6 +302,17 @@ def delete_book(request, pk):
     return render(request, 'books/delete_book.html', {'book': book})
 
 
+def download_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+
+    # Check purchase status
+    if not Purchase.objects.filter(buyer=request.user, book=book).exists():
+        messages.error(request, "You must purchase this to download.")
+        return redirect('book_detail', pk=book.pk)
+
+    # Redirect to the file URL
+    return redirect(book.ebook_file.url)
+
 @login_required
 def edit_profile(request):
     profile, _ = Profile.objects.get_or_create(user=request.user)
@@ -381,3 +392,5 @@ def become_author(request):
         messages.success(request, "Your request to become an author has been sent!") # Success flash
         return redirect('book_list')
     return render(request, 'books/become_author.html')
+
+

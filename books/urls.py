@@ -22,5 +22,6 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('author/<str:username>/', views.author_profile, name='author_profile'),
     path('author-requests/', views.author_requests, name='author_requests'),
-    path('approve/<int:request_id>/', views.approve_author, name='approve_author')
+    path('approve/<int:request_id>/', views.approve_author, name='approve_author'),
+    path('book/<int:book_id>/download/', views.download_book, name='download_book'),
 ]
