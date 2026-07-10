@@ -310,8 +310,17 @@ def download_book(request, book_id):
         messages.error(request, "You must purchase this to download.")
         return redirect('book_detail', pk=book.pk)
 
-    # Redirect to the file URL
-    return redirect(book.ebook_file.url)
+    # Get the value directly from the database field
+    raw_file_value = str(book.ebook_file)
+
+    # If the URL is "doubled," we extract the clean part
+    if raw_file_value.count('https://res.cloudinary.com') > 1:
+        # Splits the string and takes the last part, which is the correct URL
+        final_url = 'https' + raw_file_value.split('https')[-1]
+    else:
+        final_url = raw_file_value
+
+    return redirect(final_url)
 
 @login_required
 def edit_profile(request):
