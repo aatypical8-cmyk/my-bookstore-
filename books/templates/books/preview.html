@@ -8,6 +8,6 @@
     <div class="actions" style="margin-top: 20px;">
         <p><em>Note: This is a preview. Purchase the book to download or read the full version.</em></p>
         <a href="{% url 'book_detail' book.pk %}" class="btn">Back to Details</a>
-        <a href="{% url 'buy_book' book.pk %}" class="btn-buy">Buy Now</a>
+        <a href="{% url 'request_payment' book.pk %}" class="btn-buy">Buy Now</a>
     </div>
 </div>
