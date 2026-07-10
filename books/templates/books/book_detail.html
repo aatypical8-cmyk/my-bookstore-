@@ -35,8 +35,6 @@
             {% else %}
             <!-- Link this to a view that creates a 'PendingPayment' record -->
                 <a href="{% url 'request_payment' book.pk %}" class="btn btn-primary mt-3">Purchase Now</a>
-            <!-- Preview Button -->
-                <a href="{% url 'preview_book' book.pk %}" class="btn btn-secondary mt-3">Preview Book</a>
             {% endif %}
         </div>
     </div>
