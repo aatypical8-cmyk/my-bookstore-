@@ -19,6 +19,7 @@
 
                     <div class="card-body">
                         <h5 class="card-title">{{ book.title }}</h5>
+                        <span class="badge bg-primary">{{ book.category }}</span>
                         <p class="card-text"><strong>Price:</strong> KES {{ book.price }}</p>
                         <a href="{% url 'book_detail' book.pk %}" class="btn btn-primary">View Details</a>
                     </div>

@@ -5,7 +5,7 @@ from .models import Book, Purchase, Profile
 # ====================== BOOK ADMIN ======================
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author', 'price', 'created_at']
+    list_display = ['title', 'author', 'price', 'category']
     list_filter = ['created_at', 'author']
     search_fields = ['title', 'description']
 

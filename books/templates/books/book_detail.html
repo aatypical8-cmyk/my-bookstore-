@@ -10,6 +10,9 @@
         </div>
         <div class="col-md-6">
             <h1>{{ book.title }}</h1>
+            <span class="badge bg-info text-dark" style="padding: 8px 12px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;">
+                Genre: {{ book.category }}
+            </span>
             <p><strong>Author:</strong> {{ book.author.username }}</p>
             <p><strong>Price:</strong> KES {{ book.price }}</p>
             <p>{{ book.description }}</p>
@@ -31,10 +34,16 @@
 
             <!-- Purchase/Download Button -->
             {% if has_purchased %}
-                <a href="{% url 'download_book' book.pk %}" class="btn">Download Book</a>
+                <a href="{% url 'download_book' book.pk %}" class="btn btn-primary btn-lg shadow-sm"
+                                                            style="padding: 12px 25px; font-weight: bold; border-radius: 8px">
+                    Download Book
+                </a>
             {% else %}
             <!-- Link this to a view that creates a 'PendingPayment' record -->
-                <a href="{% url 'request_payment' book.pk %}" class="btn btn-primary mt-3">Purchase Now</a>
+                <a href="{% url 'request_payment' book.pk %}" class="btn btn-success btn-lg shadow-sm"
+                                                              style="padding: 12px 25px; font-weight: bold;">
+                    Purchase Now - KES {{ book.price }}
+                </a>
             {% endif %}
         </div>
     </div>

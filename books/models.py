@@ -9,6 +9,7 @@ class Book(models.Model):
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
     ebook_file = models.FileField(upload_to='ebooks/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(max_length=50, default='General')
     def __str__(self):
         return self.title
 
