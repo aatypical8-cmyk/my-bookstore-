@@ -19,21 +19,26 @@ from .forms import BookForm
 from django.http import HttpResponse
 from .models import Profile
 
+from django.shortcuts import render
+from .models import Book
 
-# ====================== MAIN VIEWS ======================
-def book_list(request):
-    books = Book.objects.all()
-    # Check status only if user is logged in
-    is_pending = False
-    if request.user.is_authenticated:
-        is_pending = AuthorRequest.objects.filter(user=request.user, status='pending').exists()
 
-    # Combine both into one context dictionary
+def book_list(view_self, request):
+    category_filter = request.GET.get('category')
+
+    if category_filter:
+        books = Book.objects.filter(category__iexact=category_filter)
+    else:
+        books = Book.objects.all()
+
+    # Get a unique list of all categories for the filter buttons/dropdown
+    categories = Book.objects.values_list('category', flat=True).distinct()
+
     context = {
         'books': books,
-        'is_pending': is_pending
+        'categories': categories,
+        'selected_category': category_filter,
     }
-
     return render(request, 'books/book_list.html', context)
 
 

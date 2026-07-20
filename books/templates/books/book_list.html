@@ -9,6 +9,23 @@
         </div>
     {% endif %}
 
+    <!-- Category Filter Section -->
+    <div class="mb-4">
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'book_list' %}" class="btn btn-outline-secondary {% if not selected_category %}active{% endif %}">
+                All Books
+            </a>
+
+        {% for cat in categories %}
+            {% if cat %}
+                <a href="?category={{ cat }}" class="btn btn-outline-primary {% if selected_category == cat %}active{% endif %}">
+                    {{ cat }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
     <div class="row">
         {% for book in books %}
             <div class="col-md-4">

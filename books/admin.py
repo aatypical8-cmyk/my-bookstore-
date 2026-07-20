@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Book, Purchase, Profile
 
-
 # ====================== BOOK ADMIN ======================
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
