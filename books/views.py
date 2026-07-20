@@ -23,7 +23,7 @@ from django.shortcuts import render
 from .models import Book
 
 
-def book_list(view_self, request):
+def book_list(request):
     category_filter = request.GET.get('category')
 
     if category_filter:
