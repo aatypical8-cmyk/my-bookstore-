@@ -8,6 +8,7 @@
                 <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}">
             {% endif %}
         </div>
+
         <div class="col-md-6">
             <h1>{{ book.title }}</h1>
             <span class="badge bg-info text-dark" style="padding: 8px 12px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;">
@@ -37,7 +38,12 @@
                 <a href="{% url 'download_book' book.pk %}" class="btn btn-primary btn-lg shadow-sm"
                                                             style="padding: 12px 25px; font-weight: bold; border-radius: 8px">
                     Download Book
+
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2375581839598371"
+                            crossorigin="anonymous"></script>
                 </a>
+
+
             {% else %}
             <!-- Link this to a view that creates a 'PendingPayment' record -->
                 <a href="{% url 'request_payment' book.pk %}" class="btn btn-success btn-lg shadow-sm"
