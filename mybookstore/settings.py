@@ -114,7 +114,7 @@ import dj_database_url
 # If not (like on your local machine), it uses the sqlite fallback.
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
+        default='sqlite:///db.sqlite3',
         conn_max_age=600,
     )
 }
