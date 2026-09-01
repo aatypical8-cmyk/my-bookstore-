@@ -140,31 +140,13 @@ def upload_book(request):
         ebook_file_obj = request.FILES.get('ebook_file')
 
         if title and description and price:
-            uploaded_cover_url = None
-            uploaded_ebook_url = None
-
-            # 2. Upload the cover image to Cloudinary first
-            if cover_image_file:
-                cover_upload = cloudinary.uploader.upload(cover_image_file)
-                uploaded_cover_url = cover_upload.get('secure_url')
-
-            # 3. Stream the heavy PDF to Cloudinary securely using resource_type="auto"
-            if ebook_file_obj:
-                ebook_upload = cloudinary.uploader.upload(
-                    ebook_file_obj,
-                    resource_type="auto"  # <-- Prevents connection drops on large PDFs
-                )
-                uploaded_ebook_url = ebook_upload.get('secure_url')
-
-            # 4. Save the string URLs to the database record instead of the raw data block
-            Book.objects.create(
-                title=title,
-                description=description,
-                price=price,
-                author=request.user,
-                cover_image=uploaded_cover_url,
-                ebook_file=uploaded_ebook_url
-            )
+            Book.objects.create(title=title,
+                                description=description,
+                                price=price,
+                                cover_image=cover_image_file,
+                                ebook_file=ebook_file_obj,
+                                author=request.user
+                                )
 
             messages.success(request, f"Book '{title}' uploaded successfully!")
             return redirect('author_dashboard')
