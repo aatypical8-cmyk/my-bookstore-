@@ -31,10 +31,10 @@ ALLOWED_HOSTS = ['*']
 # For Django 4.2+ or newer versions
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage", # Changed from CompressedManifestStaticFilesStorage
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage", # Changed from CompressedManifestStaticFilesStorage
     },
 }
 
@@ -62,7 +62,6 @@ CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'mfho6mc1',
     'API_KEY': '637291241727791',
     'API_SECRET': 'QGXZaTWw8y3aAuJMjTneAj8vC8U',
-    'RESOURCE_TYPE': 'raw',
     'UPLOAD_PRESET': 'django_preset'
 }
 
