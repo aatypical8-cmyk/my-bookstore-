@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -7,7 +8,10 @@ class Book(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
-    ebook_file = models.FileField(upload_to='ebooks/', null=True, blank=True)
+    ebook_file = models.FileField(upload_to='ebooks/',
+                                  storage=FileSystemStorage(),
+                                  null=True,
+                                  blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=50, default='General')
     def __str__(self):
