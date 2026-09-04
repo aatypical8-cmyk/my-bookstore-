@@ -24,8 +24,14 @@
                         </p>
                     </div>
                     <div class="card-footer">
-                        <a href="{% url 'read_online' purchase.book.id %}" target="_blank" class="btn btn-primary">
+                        <!-- Read Online Button -->
+                        <a href="{% url 'read_online' book.pk %}" class="btn btn-primary" target="_blank">
                             Read Online
+                        </a>
+
+                        <!-- Download Button -->
+                        <a href="{% url 'download_book' book.pk %}" class="btn btn-success">
+                            Download Ebook
                         </a>
                     </div>
                 </div>

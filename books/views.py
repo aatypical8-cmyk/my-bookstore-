@@ -162,29 +162,24 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Book, Purchase
 
-@login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.http import FileResponse
+from .models import Book
+@login_required()
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-
-    if not Purchase.objects.filter(buyer=request.user, book=book).exists():
-        messages.error(request, "You must purchase this book to read it.")
-        return redirect('book_detail', pk=book.pk)
-
     if book.ebook_file:
-        # Get the initial URL
-        raw_url = book.ebook_file.url if hasattr(book.ebook_file, 'url') else str(book.ebook_file)
+        # Opens the file in the browser (inline) for reading
+        return FileResponse(book.ebook_file.open(), content_type='application/pdf')
+    return redirect('book_detail', pk=book_id)
 
-        # If the URL contains a second 'https://res.cloudinary.com' inside it,
-        # we extract only the part from the last occurrence of 'https'
-        if raw_url.count('https://res.cloudinary.com') > 1:
-            clean_url = 'https' + raw_url.split('https')[-1]
-        else:
-            clean_url = raw_url
-
-        return redirect(clean_url)
-
-    messages.error(request, "No ebook file available.")
-    return redirect('book_detail', pk=book.pk)
+@login_required()
+def download_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    if book.ebook_file:
+        # Forces the browser to download the file as an attachment
+        return FileResponse(book.ebook_file.open(), as_attachment=True)
+    return redirect('book_detail', pk=book_id)
 
 @login_required
 def my_library(request):
@@ -287,27 +282,6 @@ def delete_book(request, pk):
         return redirect('author_dashboard')
 
     return render(request, 'books/delete_book.html', {'book': book})
-
-
-def download_book(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
-
-    # Check purchase status
-    if not Purchase.objects.filter(buyer=request.user, book=book).exists():
-        messages.error(request, "You must purchase this to download.")
-        return redirect('book_detail', pk=book.pk)
-
-    # Get the value directly from the database field
-    raw_file_value = str(book.ebook_file)
-
-    # If the URL is "doubled," we extract the clean part
-    if raw_file_value.count('https://res.cloudinary.com') > 1:
-        # Splits the string and takes the last part, which is the correct URL
-        final_url = 'https' + raw_file_value.split('https')[-1]
-    else:
-        final_url = raw_file_value
-
-    return redirect(final_url)
 
 @login_required
 def edit_profile(request):
