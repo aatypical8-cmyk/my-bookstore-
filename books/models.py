@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+from cloudinary_storage.storage import RawMediaCloudinaryStorage
+
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -9,7 +11,7 @@ class Book(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
     ebook_file = models.FileField(upload_to='ebooks/',
-                                  storage=FileSystemStorage(),
+                                  storage=RawMediaCloudinaryStorage(),
                                   null=True,
                                   blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
