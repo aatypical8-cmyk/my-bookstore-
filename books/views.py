@@ -165,12 +165,13 @@ from .models import Book, Purchase
 from django.shortcuts import get_object_or_404, redirect
 from django.http import FileResponse
 from .models import Book
+
 @login_required()
 def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     if book.ebook_file:
         # Opens the file in the browser (inline) for reading
-        return FileResponse(book.ebook_file.open(), content_type='application/pdf')
+        return redirect(book.ebook_file.url)
     return redirect('book_detail', pk=book_id)
 
 @login_required()
@@ -178,7 +179,7 @@ def download_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     if book.ebook_file:
         # Forces the browser to download the file as an attachment
-        return FileResponse(book.ebook_file.open(), as_attachment=True)
+        return redirect(book.ebook_file.url)
     return redirect('book_detail', pk=book_id)
 
 @login_required
