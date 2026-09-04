@@ -25,12 +25,11 @@
                     </div>
                     <div class="card-footer">
                         <!-- Read Online Button -->
-                        <a href="{% url 'read_online' book.pk %}" class="btn btn-primary" target="_blank">
+                        <a href="{% url 'read_online' purchase.book.pk %}" class="btn btn-primary" target="_blank">
                             Read Online
                         </a>
-
                         <!-- Download Button -->
-                        <a href="{% url 'download_book' book.pk %}" class="btn btn-success">
+                        <a href="{% url 'download_book' purchase.book.pk %}" class="btn btn-success">
                             Download Ebook
                         </a>
                     </div>
