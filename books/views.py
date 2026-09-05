@@ -169,8 +169,8 @@ import requests
 from django.contrib import messages
 
 @login_required()
-def read_online(request, pk):
-    book = get_object_or_404(Book, pk=pk)
+def read_online(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
     file_url = book.clean_ebook_url
     response = requests.head(file_url)
     if response.status_code == 404:
@@ -184,8 +184,8 @@ def read_online(request, pk):
     return redirect('my_library')
 
 @login_required()
-def download_book(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
+def download_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
     file_url = book.clean_ebook_url
     response = requests.head(file_url)
     if response.status_code == 404:
