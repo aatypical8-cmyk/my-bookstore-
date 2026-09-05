@@ -165,10 +165,19 @@ from .models import Book, Purchase
 from django.shortcuts import get_object_or_404, redirect
 from django.http import FileResponse
 from .models import Book
+import requests
+from django.contrib import messages
 
 @login_required()
-def read_online(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
+def read_online(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    file_url = book.clean_ebook_url
+    response = requests.head(file_url)
+    if response.status_code == 404:
+        messages.error(
+            request, "This book file is temporarily unavailable. Please contact publisher for support.",
+        )
+        return redirect("library_page_name")
     if book.ebook_file:
         # Opens the file in the browser (inline) for reading
         return redirect(book.clean_ebook_url)
@@ -177,6 +186,13 @@ def read_online(request, book_id):
 @login_required()
 def download_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
+    file_url = book.clean_ebook_url
+    response = requests.head(file_url)
+    if response.status_code == 404:
+        messages.error(
+            request, "This book file is temporarily unavailable. Please contact publisher for support.",
+        )
+        return redirect("library_page_name")
     if book.ebook_file:
         # Forces the browser to download the file as an attachment
         return redirect(book.clean_ebook_url)
