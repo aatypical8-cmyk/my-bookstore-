@@ -171,7 +171,7 @@ def read_online(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     if book.ebook_file:
         # Opens the file in the browser (inline) for reading
-        return redirect(book.ebook_file.url)
+        return redirect(book.clean_ebook_url)
     return redirect('my_library')
 
 @login_required()
@@ -179,7 +179,7 @@ def download_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     if book.ebook_file:
         # Forces the browser to download the file as an attachment
-        return redirect(book.ebook_file.url)
+        return redirect(book.clean_ebook_url)
     return redirect('my_library')
 
 @login_required

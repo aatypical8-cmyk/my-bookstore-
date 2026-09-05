@@ -10,10 +10,16 @@ class Book(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cover_image = models.ImageField(upload_to='covers/', null=True, blank=True)
-    ebook_file = models.FileField(upload_to='ebooks/',
-                                  storage=RawMediaCloudinaryStorage(),
-                                  null=True,
-                                  blank=True)
+    ebook_file = models.FileField(upload_to='ebooks/', storage=RawMediaCloudinaryStorage(), null=True, blank=True)
+
+    @property
+    def clean_ebook_url(self):
+        if self.ebook_file:
+            url = self.ebook_file.url
+            # Clean up any leftover 'media/' duplicate segments from past storage shifts
+            return url.replace('/media/ebooks/', '/ebooks/')
+        return '#'
+
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=50, default='General')
     def __str__(self):
