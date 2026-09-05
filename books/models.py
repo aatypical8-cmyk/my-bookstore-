@@ -16,7 +16,7 @@ class Book(models.Model):
     def clean_ebook_url(self):
         if self.ebook_file:
             url = self.ebook_file.url
-            # If the URL points to raw uploads but is missing 'v1/media/', fix the path structure
+            # Clean the URL for ALL raw document files (pdf, docx, epub, etc.)
             if "/raw/upload/" in url and "/v1/media/" not in url:
                 url = url.replace("/raw/upload/", "/raw/upload/v1/media/")
             return url
