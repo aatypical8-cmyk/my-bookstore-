@@ -177,7 +177,7 @@ def read_online(request, book_id):
         messages.error(
             request, "This book file is temporarily unavailable. Please contact publisher for support.",
         )
-        return redirect("library_page_name")
+        return redirect("my_library")
     if book.ebook_file:
         # Opens the file in the browser (inline) for reading
         return redirect(book.clean_ebook_url)
@@ -192,7 +192,7 @@ def download_book(request, book_id):
         messages.error(
             request, "This book file is temporarily unavailable. Please contact publisher for support.",
         )
-        return redirect("library_page_name")
+        return redirect("my_library")
     if book.ebook_file:
         # Forces the browser to download the file as an attachment
         return redirect(book.clean_ebook_url)
