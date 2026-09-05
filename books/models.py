@@ -16,12 +16,11 @@ class Book(models.Model):
     def clean_ebook_url(self):
         if self.ebook_file:
             url = self.ebook_file.url
-            # Remove versioning or media paths if present to match Cloudinary raw format
-            url = url.replace('/v1/', '/')
-            if '/media/' in url:
-                url = url.replace('/media/', '/')
+            # If the URL points to raw uploads but is missing 'v1/media/', fix the path structure
+            if "/raw/upload/" in url and "/v1/media/" not in url:
+                url = url.replace("/raw/upload/", "/raw/upload/v1/media/")
             return url
-        return '#'
+        return ""
 
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=50, default='General')
