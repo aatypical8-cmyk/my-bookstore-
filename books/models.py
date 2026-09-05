@@ -17,7 +17,7 @@ class Book(models.Model):
         if self.ebook_file:
             url = self.ebook_file.url
             # Clean up any leftover 'media/' duplicate segments from past storage shifts
-            return url.replace('/media/ebooks/', '/ebooks/')
+            return url.replace('/media/ebooks/', '/v1/', '/', '/ebooks/')
         return '#'
 
     created_at = models.DateTimeField(auto_now_add=True)
