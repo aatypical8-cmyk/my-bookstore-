@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import path
+from . import views
 
 urlpatterns = [
     path('', views.book_list, name='book_list'),
@@ -24,4 +26,5 @@ urlpatterns = [
     path('author-requests/', views.author_requests, name='author_requests'),
     path('approve/<int:request_id>/', views.approve_author, name='approve_author'),
     path('book/<int:book_id>/download/', views.download_book, name='download_book'),
+    path('purchase/<int:pk>/delete/', views.delete_pending_purchase, name='delete_pending_purchase'),
 ]

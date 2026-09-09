@@ -402,3 +402,22 @@ def preview_book(request, book_id):
     return render(request, 'books/preview.html', {'book': book, 'preview_url': preview_url})
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Purchase  # Replace with your actual model name if different
+
+
+@login_required
+def delete_pending_purchase(request, pk):
+    # Ensure the purchase belongs to the logged-in user and is still unpaid/pending
+    purchase = get_object_or_404(Purchase, pk=pk, user=request.user, is_paid=False)
+
+    if request.method == 'POST':
+        purchase.delete()
+        messages.success(request, "Pending payment request has been cancelled.")
+
+    return redirect('my_library')  # Redirect back to the library or dashboard
+
+
+
