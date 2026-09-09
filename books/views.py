@@ -410,14 +410,13 @@ from .models import Purchase  # Replace with your actual model name if different
 
 @login_required
 def delete_pending_purchase(request, pk):
-    # Ensure the purchase belongs to the logged-in user and is still unpaid/pending
-    purchase = get_object_or_404(Purchase, pk=pk, user=request.user, is_paid=False)
+    purchase = get_object_or_404(Purchase, pk=pk)
 
     if request.method == 'POST':
         purchase.delete()
         messages.success(request, "Pending payment request has been cancelled.")
 
-    return redirect('my_library')  # Redirect back to the library or dashboard
+    return redirect('pending_payments')  # Redirect back to the library or dashboard
 
 
 
