@@ -9,7 +9,7 @@
     {% if purchases %}
         <div class="row">
             {% for purchase in purchases %}
-            <div class="col-md-4 mb-4">
+            <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
                     {% if purchase.book.cover_image %}
                         <img src="{{ purchase.book.cover_image.url }}"
