@@ -405,18 +405,20 @@ def preview_book(request, book_id):
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Purchase  # Replace with your actual model name if different
+from .models import Purchase  # Check if your model is named Purchase or something else
 
 
 @login_required
 def delete_pending_purchase(request, pk):
+    # Fetch the specific purchase record
     purchase = get_object_or_404(Purchase, pk=pk)
 
     if request.method == 'POST':
         purchase.delete()
         messages.success(request, "Pending payment request has been cancelled.")
 
-    return redirect('pending_payments')  # Redirect back to the library or dashboard
+    # Make sure this matches the name in your urls.py (item #15: name='pending_payments')
+    return redirect('pending_payments')
 
 
 
