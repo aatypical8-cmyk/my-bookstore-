@@ -27,4 +27,6 @@ urlpatterns = [
     path('approve/<int:request_id>/', views.approve_author, name='approve_author'),
     path('book/<int:book_id>/download/', views.download_book, name='download_book'),
     path('purchase/<int:pk>/delete/', views.delete_pending_purchase, name='delete_pending_purchase'),
+    path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
+    path('terms-conditions/', views.terms_conditions, name='terms_conditions'),
 ]

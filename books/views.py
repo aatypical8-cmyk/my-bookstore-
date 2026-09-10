@@ -419,5 +419,13 @@ def delete_pending_purchase(request, pk):
 
     return redirect('pending_payments')
 
+from django.shortcuts import render
+
+def privacy_policy(request):
+    return render(request, 'books/privacy_policy.html')
+
+def terms_conditions(request):
+    return render(request, 'books/terms_conditions.html')
+
 
 
